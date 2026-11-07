@@ -73,7 +73,7 @@ export default function FacilitiesScreen() {
                 color={colors.primary}
                 style={styles.footer}
               />
-            ) : null
+            ) : undefined
           }
         />
       )}

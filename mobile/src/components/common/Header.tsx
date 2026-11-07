@@ -1,12 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type ReactNode,
-} from "react-native";
+import type { ReactNode } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../theme/colors";
 import { fontSizes, fontWeights } from "../../theme/fonts";
 import { spacing } from "../../theme/spacing";

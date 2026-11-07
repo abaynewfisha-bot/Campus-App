@@ -66,7 +66,7 @@ export default function ClubsScreen() {
                 color={colors.primary}
                 style={styles.footer}
               />
-            ) : null
+            ) : undefined
           }
         />
       )}

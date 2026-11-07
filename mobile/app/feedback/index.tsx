@@ -134,7 +134,7 @@ export default function FeedbackScreen() {
                 color={colors.primary}
                 style={styles.footerLoader}
               />
-            ) : null
+            ) : undefined
           }
         />
       )}

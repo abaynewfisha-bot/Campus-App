@@ -74,7 +74,7 @@ export default function AnnouncementsScreen() {
                 color={colors.primary}
                 style={styles.footer}
               />
-            ) : null
+            ) : undefined
           }
         />
       )}

@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Pressable,
@@ -32,20 +32,26 @@ interface Stats {
   pendingFeedback: number;
 }
 
-const quickActions = [
+interface QuickAction {
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  href: Href;
+}
+
+const quickActions: QuickAction[] = [
   {
     label: "Manage service requests",
-    icon: "construct-outline" as const,
+    icon: "construct-outline",
     href: "/requests",
   },
   {
     label: "Review feedback",
-    icon: "chatbubble-ellipses-outline" as const,
+    icon: "chatbubble-ellipses-outline",
     href: "/feedback",
   },
   {
     label: "New announcement",
-    icon: "megaphone-outline" as const,
+    icon: "megaphone-outline",
     href: "/admin/create?type=announcement",
   },
   {
@@ -170,7 +176,7 @@ export default function AdminDashboardScreen() {
             {quickActions.map((action) => (
               <Pressable
                 key={action.label}
-                onPress={() => router.push(action.href as never)}
+                onPress={() => router.push(action.href)}
                 style={({ pressed }) => [
                   styles.action,
                   pressed && styles.pressed,

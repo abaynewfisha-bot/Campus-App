@@ -94,7 +94,7 @@ export default function RequestsScreen() {
                 color={colors.primary}
                 style={styles.footer}
               />
-            ) : null
+            ) : undefined
           }
         />
       )}

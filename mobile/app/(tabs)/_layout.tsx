@@ -20,7 +20,7 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+            <Ionicons name="home" size={size} color={color as string} />
           ),
         }}
       />
@@ -29,7 +29,7 @@ export default function TabsLayout() {
         options={{
           title: "News",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="megaphone" size={size} color={color} />
+            <Ionicons name="megaphone" size={size} color={color as string} />
           ),
         }}
       />
@@ -38,7 +38,7 @@ export default function TabsLayout() {
         options={{
           title: "Events",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
+            <Ionicons name="calendar" size={size} color={color as string} />
           ),
         }}
       />
@@ -47,7 +47,7 @@ export default function TabsLayout() {
         options={{
           title: "Clubs",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people" size={size} color={color} />
+            <Ionicons name="people" size={size} color={color as string} />
           ),
         }}
       />
@@ -56,7 +56,7 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+            <Ionicons name="person" size={size} color={color as string} />
           ),
         }}
       />
