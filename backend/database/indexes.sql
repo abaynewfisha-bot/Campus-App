@@ -1,0 +1,12 @@
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (LOWER(email));
+CREATE INDEX IF NOT EXISTS idx_announcements_category ON announcements (category);
+CREATE INDEX IF NOT EXISTS idx_announcements_created_at ON announcements (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_events_start_date ON events (start_date);
+CREATE INDEX IF NOT EXISTS idx_events_category ON events (category);
+CREATE INDEX IF NOT EXISTS idx_clubs_name ON clubs (LOWER(name));
+CREATE INDEX IF NOT EXISTS idx_facilities_category ON facilities (category);
+CREATE INDEX IF NOT EXISTS idx_service_requests_user ON service_requests (user_id);
+CREATE INDEX IF NOT EXISTS idx_service_requests_status ON service_requests (status);
+CREATE INDEX IF NOT EXISTS idx_feedback_user ON feedback (user_id);
+CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback (status);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications (user_id, is_read);

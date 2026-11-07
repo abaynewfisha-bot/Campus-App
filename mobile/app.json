@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "Fronted",
-    "slug": "Fronted",
+    "name": "University Campus",
+    "slug": "university-campus-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "fronted",
-    "userInterfaceStyle": "automatic",
+    "scheme": "campusapp",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -21,7 +22,7 @@
     },
     "web": {
       "bundler": "metro",
-      "output": "server",
+      "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -34,7 +35,13 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow University Campus to show your location on the campus map."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

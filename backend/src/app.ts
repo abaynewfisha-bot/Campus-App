@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import apiRoutes from "./routes";
+import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 
 const app = express();
 
@@ -24,5 +26,10 @@ app.get("/api/health", (_req: Request, res: Response) => {
     message: "University Campus API is healthy",
   });
 });
+
+app.use("/api", apiRoutes);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
