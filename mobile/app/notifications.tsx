@@ -101,21 +101,28 @@ export default function NotificationsScreen() {
   }
 
   async function handleEnableAlerts() {
-    const granted = await registerForNotifications();
+    try {
+      const granted = await registerForNotifications();
 
-    if (!granted) {
-      Alert.alert(
-        "Notifications disabled",
-        "Enable notifications for this app in your device settings to receive campus alerts.",
+      if (!granted) {
+        Alert.alert(
+          "Notifications disabled",
+          "Enable notifications for this app in your device settings to receive campus alerts.",
+        );
+        return;
+      }
+
+      await scheduleLocalNotification(
+        "Campus alerts enabled",
+        "You will receive important campus announcements.",
       );
-      return;
+      Alert.alert("Enabled", "Device notifications are now enabled.");
+    } catch (notificationError) {
+      Alert.alert(
+        "Could not enable notifications",
+        getErrorMessage(notificationError),
+      );
     }
-
-    await scheduleLocalNotification(
-      "Campus alerts enabled",
-      "You will receive important campus announcements.",
-    );
-    Alert.alert("Enabled", "Device notifications are now enabled.");
   }
 
   return (

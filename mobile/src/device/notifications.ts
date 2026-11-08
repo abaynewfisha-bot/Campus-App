@@ -1,4 +1,5 @@
 import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
 import { Platform } from "react-native";
 
 Notifications.setNotificationHandler({
@@ -11,7 +12,7 @@ Notifications.setNotificationHandler({
 });
 
 export async function registerForNotifications(): Promise<boolean> {
-  if (Platform.OS === "android") {
+  if (Platform.OS === "android" && Constants.appOwnership !== "expo") {
     await Notifications.setNotificationChannelAsync("default", {
       name: "Default",
       importance: Notifications.AndroidImportance.HIGH,
