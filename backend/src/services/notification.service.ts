@@ -3,7 +3,11 @@ import { userModel } from "../models/user.model";
 import { ApiError } from "../utils/ApiError";
 import { getPagination, paginate } from "../utils/pagination";
 import { booleanParam } from "../utils/query";
-import { CreateNotificationInput } from "../validators/notification.validator";
+import {
+  CreateAdminMessageInput,
+  CreateNotificationInput,
+} from "../validators/notification.validator";
+import { AuthUser } from "../types";
 
 export const notificationService = {
   async list(query: Record<string, unknown>, userId: string) {
@@ -58,6 +62,19 @@ export const notificationService = {
     }
 
     return notification;
+  },
+
+  async messageAdmins(input: CreateAdminMessageInput, sender: AuthUser) {
+    const count = await notificationModel.createForAdmins({
+      title: `Message from ${sender.fullName} (${sender.role})`,
+      message: `${input.title}\n\n${input.message}`,
+    });
+
+    if (count === 0) {
+      throw new ApiError(503, "No admin account is available to receive messages");
+    }
+
+    return { sentTo: count };
   },
 
   async markAsRead(id: string, userId: string) {

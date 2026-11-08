@@ -8,6 +8,14 @@ import {
 import { apiClient } from "./apiClient";
 
 export const notificationService = {
+  async messageAdmins(input: {
+    title: string;
+    message: string;
+  }): Promise<{ sentTo: number }> {
+    const response = await apiClient.post("/notifications/contact-admin", input);
+    return response.data.data as { sentTo: number };
+  },
+
   async create(
     input: CreateNotificationInput,
   ): Promise<CreateNotificationResult> {

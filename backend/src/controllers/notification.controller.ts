@@ -16,6 +16,13 @@ export const createNotification = asyncHandler(
   },
 );
 
+export const messageAdmins = asyncHandler(
+  async (req: Request, res: Response) => {
+    const result = await notificationService.messageAdmins(req.body, req.user!);
+    res.status(201).json({ success: true, data: result });
+  },
+);
+
 export const markNotificationRead = asyncHandler(
   async (req: Request, res: Response) => {
     const notification = await notificationService.markAsRead(

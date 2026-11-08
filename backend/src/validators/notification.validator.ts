@@ -15,6 +15,14 @@ export const createNotificationSchema = z.object({
   "Choose one user, one role, or all students and staff",
 );
 
+export const createAdminMessageSchema = z.object({
+  title: z.string().trim().min(2).max(200),
+  message: z.string().trim().min(2).max(5000),
+});
+
 export type CreateNotificationInput = z.infer<
   typeof createNotificationSchema
+>;
+export type CreateAdminMessageInput = z.infer<
+  typeof createAdminMessageSchema
 >;

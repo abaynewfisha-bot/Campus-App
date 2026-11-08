@@ -26,6 +26,7 @@ interface QuickAction {
   icon: keyof typeof Ionicons.glyphMap;
   route: Href;
   adminOnly?: boolean;
+  studentStaffOnly?: boolean;
 }
 
 const actions: QuickAction[] = [
@@ -36,6 +37,7 @@ const actions: QuickAction[] = [
   { label: "Campus Map", icon: "map", route: "/map" },
   { label: "Requests", icon: "construct", route: "/requests" },
   { label: "Feedback", icon: "chatbubble-ellipses", route: "/feedback" },
+  { label: "Message admin", icon: "mail", route: "/contact-admin", studentStaffOnly: true },
   { label: "Emergency", icon: "call", route: "/emergency-contacts" },
   { label: "Alerts", icon: "notifications", route: "/notifications" },
   { label: "Admin", icon: "shield-checkmark", route: "/admin/dashboard", adminOnly: true },
@@ -71,7 +73,11 @@ export default function HomeScreen() {
 
   const firstName = user?.fullName.split(" ")[0] ?? "there";
   const visibleActions = actions.filter(
-    (action) => !action.adminOnly || user?.role === "admin",
+    (action) =>
+      (!action.adminOnly || user?.role === "admin") &&
+      (!action.studentStaffOnly ||
+        user?.role === "student" ||
+        user?.role === "staff"),
   );
 
   return (

@@ -3,7 +3,10 @@ import * as notificationController from "../controllers/notification.controller"
 import { authenticate } from "../middleware/auth.middleware";
 import { authorize } from "../middleware/role.middleware";
 import { validate } from "../middleware/validate.middleware";
-import { createNotificationSchema } from "../validators/notification.validator";
+import {
+  createAdminMessageSchema,
+  createNotificationSchema,
+} from "../validators/notification.validator";
 
 const router = Router();
 
@@ -11,6 +14,12 @@ router.use(authenticate);
 
 router.get("/", notificationController.listNotifications);
 router.patch("/read-all", notificationController.markAllNotificationsRead);
+router.post(
+  "/contact-admin",
+  authorize("student", "staff"),
+  validate(createAdminMessageSchema),
+  notificationController.messageAdmins,
+);
 router.patch("/:id/read", notificationController.markNotificationRead);
 router.post(
   "/",

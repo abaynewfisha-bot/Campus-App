@@ -95,6 +95,18 @@ export const notificationModel = {
     return result.rowCount ?? 0;
   },
 
+  async createForAdmins(input: {
+    title: string;
+    message: string;
+  }): Promise<number> {
+    const result = await pool.query(
+      `INSERT INTO notifications (user_id, title, message)
+       SELECT id, $1, $2 FROM users WHERE role = 'admin'`,
+      [input.title, input.message],
+    );
+    return result.rowCount ?? 0;
+  },
+
   async markAsRead(
     id: string,
     userId: string,
