@@ -1,7 +1,20 @@
-import { AppNotification, ListParams, NotificationList } from "../types";
+import {
+  AppNotification,
+  CreateNotificationInput,
+  CreateNotificationResult,
+  ListParams,
+  NotificationList,
+} from "../types";
 import { apiClient } from "./apiClient";
 
 export const notificationService = {
+  async create(
+    input: CreateNotificationInput,
+  ): Promise<CreateNotificationResult> {
+    const response = await apiClient.post("/notifications", input);
+    return response.data.data as CreateNotificationResult;
+  },
+
   async list(params: ListParams = {}): Promise<NotificationList> {
     const response = await apiClient.get("/notifications", { params });
     return {

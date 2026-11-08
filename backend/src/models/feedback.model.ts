@@ -1,5 +1,5 @@
 import { pool } from "../config/db";
-import { FeedbackStatus, PaginationParams } from "../types";
+import { FeedbackStatus, PaginationParams, UserRole } from "../types";
 
 export interface FeedbackRecord {
   id: string;
@@ -76,15 +76,34 @@ export const feedbackModel = {
 
   async create(input: {
     userId: string;
+    userName: string;
+    userRole: UserRole;
     subject: string;
     description: string;
     category: string;
   }): Promise<FeedbackRecord> {
     const result = await pool.query(
-      `INSERT INTO feedback (user_id, subject, description, category)
-       VALUES ($1, $2, $3, $4)
-       RETURNING ${SELECT_FIELDS}`,
-      [input.userId, input.subject, input.description, input.category],
+      `WITH created AS (
+         INSERT INTO feedback (user_id, subject, description, category)
+         VALUES ($1, $2, $3, $4)
+         RETURNING ${SELECT_FIELDS}
+       ),
+       admin_notifications AS (
+         INSERT INTO notifications (user_id, title, message)
+         SELECT id, $5, $6
+         FROM users
+         WHERE role = 'admin' AND $7 IN ('student', 'staff')
+       )
+       SELECT * FROM created`,
+      [
+        input.userId,
+        input.subject,
+        input.description,
+        input.category,
+        "New feedback",
+        `From ${input.userName}: ${input.subject}`,
+        input.userRole,
+      ],
     );
     return result.rows[0] as FeedbackRecord;
   },

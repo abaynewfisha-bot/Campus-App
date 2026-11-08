@@ -35,7 +35,12 @@ export const feedbackService = {
   },
 
   async create(input: CreateFeedbackInput, user: AuthUser) {
-    return feedbackModel.create({ ...input, userId: user.id });
+    return feedbackModel.create({
+      ...input,
+      userId: user.id,
+      userName: user.fullName,
+      userRole: user.role,
+    });
   },
 
   async updateStatus(id: string, status: FeedbackStatus) {

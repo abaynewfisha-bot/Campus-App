@@ -50,6 +50,11 @@ const quickActions: QuickAction[] = [
     href: "/feedback",
   },
   {
+    label: "Notifications",
+    icon: "notifications-outline",
+    href: "/notifications",
+  },
+  {
     label: "New announcement",
     icon: "megaphone-outline",
     href: "/admin/create?type=announcement",

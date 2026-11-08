@@ -35,7 +35,12 @@ export const requestService = {
   },
 
   async create(input: CreateRequestInput, user: AuthUser) {
-    return serviceRequestModel.create({ ...input, userId: user.id });
+    return serviceRequestModel.create({
+      ...input,
+      userId: user.id,
+      userName: user.fullName,
+      userRole: user.role,
+    });
   },
 
   async updateStatus(id: string, status: RequestStatus) {

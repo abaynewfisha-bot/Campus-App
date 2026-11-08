@@ -12,7 +12,6 @@
       "supportsTablet": true
     },
     "android": {
-    
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -36,7 +35,8 @@
         {
           "locationWhenInUsePermission": "Allow University Campus to show your location on the campus map."
         }
-      ]
+      ],
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

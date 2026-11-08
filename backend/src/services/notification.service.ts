@@ -1,4 +1,5 @@
 import { notificationModel } from "../models/notification.model";
+import { userModel } from "../models/user.model";
 import { ApiError } from "../utils/ApiError";
 import { getPagination, paginate } from "../utils/pagination";
 import { booleanParam } from "../utils/query";
@@ -18,22 +19,45 @@ export const notificationService = {
 
   async create(input: CreateNotificationInput) {
     if (input.broadcast) {
-      const count = await notificationModel.createForAllUsers({
+      const count = await notificationModel.createForStudentsAndStaff({
         title: input.title,
         message: input.message,
       });
       return { broadcast: true, count };
     }
 
-    if (!input.userId) {
-      throw ApiError.badRequest("A userId or broadcast flag is required");
+    if (input.broadcastRole) {
+      const count = await notificationModel.createForRole({
+        title: input.title,
+        message: input.message,
+        role: input.broadcastRole,
+      });
+      return { broadcastRole: input.broadcastRole, count };
     }
 
-    return notificationModel.create({
+    if (!input.userId) {
+      throw ApiError.badRequest(
+        "Choose a user, a student/staff role, or all students and staff",
+      );
+    }
+
+    const recipient = await userModel.findById(input.userId);
+
+    if (!recipient || !["student", "staff"].includes(recipient.role)) {
+      throw ApiError.notFound("Student or staff recipient not found");
+    }
+
+    const notification = await notificationModel.create({
       userId: input.userId,
       title: input.title,
       message: input.message,
     });
+
+    if (!notification) {
+      throw ApiError.notFound("Student or staff recipient not found");
+    }
+
+    return notification;
   },
 
   async markAsRead(id: string, userId: string) {

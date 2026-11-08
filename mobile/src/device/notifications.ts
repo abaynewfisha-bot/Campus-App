@@ -1,5 +1,5 @@
+
 import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
 import { Platform } from "react-native";
 
 Notifications.setNotificationHandler({
@@ -12,34 +12,62 @@ Notifications.setNotificationHandler({
 });
 
 export async function registerForNotifications(): Promise<boolean> {
-  if (Platform.OS === "android" && Constants.appOwnership !== "expo") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "Default",
-      importance: Notifications.AndroidImportance.HIGH,
-    });
+  try {
+    // Create Android notification channel first
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "University Campus Notifications",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        sound: "default",
+      });
+    }
+
+    // Check existing permission
+    const current = await Notifications.getPermissionsAsync();
+
+    let permission = current;
+
+    // Request permission if not already granted
+    if (!current.granted) {
+      permission = await Notifications.requestPermissionsAsync();
+    }
+
+    if (!permission.granted) {
+      console.warn(
+        "Notification permission denied:",
+        permission.status,
+        "Can ask again:",
+        permission.canAskAgain
+      );
+
+      return false;
+    }
+
+    console.log("University Campus notifications enabled!");
+
+    return true;
+  } catch (error) {
+    console.error("Notification registration error:", error);
+    return false;
   }
-
-  const current = await Notifications.getPermissionsAsync();
-  let status = current.status;
-
-  if (status !== "granted") {
-    const requested = await Notifications.requestPermissionsAsync();
-    status = requested.status;
-  }
-
-  return status === "granted";
 }
 
 export async function scheduleLocalNotification(
   title: string,
   body: string,
-  seconds = 1,
+  seconds = 1
 ): Promise<string> {
   return Notifications.scheduleNotificationAsync({
-    content: { title, body },
+    content: {
+      title,
+      body,
+      sound: "default",
+    },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
       seconds,
+      channelId: "default",
     },
   });
 }

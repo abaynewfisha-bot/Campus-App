@@ -1,5 +1,5 @@
 import { pool } from "../config/db";
-import { PaginationParams } from "../types";
+import { PaginationParams, UserRole } from "../types";
 
 export interface NotificationRecord {
   id: string;
@@ -59,23 +59,37 @@ export const notificationModel = {
     userId: string;
     title: string;
     message: string;
-  }): Promise<NotificationRecord> {
+  }): Promise<NotificationRecord | null> {
     const result = await pool.query(
       `INSERT INTO notifications (user_id, title, message)
-       VALUES ($1, $2, $3)
+       SELECT id, $2, $3 FROM users
+       WHERE id = $1 AND role IN ('student', 'staff')
        RETURNING ${SELECT_FIELDS}`,
       [input.userId, input.title, input.message],
     );
-    return result.rows[0] as NotificationRecord;
+    return (result.rows[0] as NotificationRecord | undefined) ?? null;
   },
 
-  async createForAllUsers(input: {
+  async createForRole(input: {
+    title: string;
+    message: string;
+    role: Extract<UserRole, "student" | "staff">;
+  }): Promise<number> {
+    const result = await pool.query(
+      `INSERT INTO notifications (user_id, title, message)
+       SELECT id, $1, $2 FROM users WHERE role = $3`,
+      [input.title, input.message, input.role],
+    );
+    return result.rowCount ?? 0;
+  },
+
+  async createForStudentsAndStaff(input: {
     title: string;
     message: string;
   }): Promise<number> {
     const result = await pool.query(
       `INSERT INTO notifications (user_id, title, message)
-       SELECT id, $1, $2 FROM users`,
+       SELECT id, $1, $2 FROM users WHERE role IN ('student', 'staff')`,
       [input.title, input.message],
     );
     return result.rowCount ?? 0;

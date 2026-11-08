@@ -1,5 +1,5 @@
 import { pool } from "../config/db";
-import { PaginationParams, RequestStatus } from "../types";
+import { PaginationParams, RequestStatus, UserRole } from "../types";
 
 export interface ServiceRequestRecord {
   id: string;
@@ -77,21 +77,35 @@ export const serviceRequestModel = {
 
   async create(input: {
     userId: string;
+    userName: string;
+    userRole: UserRole;
     title: string;
     description: string;
     category: string;
     location?: string;
   }): Promise<ServiceRequestRecord> {
     const result = await pool.query(
-      `INSERT INTO service_requests (user_id, title, description, category, location)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING ${SELECT_FIELDS}`,
+      `WITH created AS (
+         INSERT INTO service_requests (user_id, title, description, category, location)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING ${SELECT_FIELDS}
+       ),
+       admin_notifications AS (
+         INSERT INTO notifications (user_id, title, message)
+         SELECT id, $6, $7
+         FROM users
+         WHERE role = 'admin' AND $8 IN ('student', 'staff')
+       )
+       SELECT * FROM created`,
       [
         input.userId,
         input.title,
         input.description,
         input.category,
         input.location || null,
+        "New service request",
+        `From ${input.userName}: ${input.title}`,
+        input.userRole,
       ],
     );
     return result.rows[0] as ServiceRequestRecord;

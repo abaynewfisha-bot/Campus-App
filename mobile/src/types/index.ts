@@ -108,6 +108,19 @@ export interface AppNotification {
   createdAt: string;
 }
 
+export interface CreateNotificationInput {
+  userId?: string;
+  title: string;
+  message: string;
+  broadcastRole?: Extract<UserRole, "student" | "staff">;
+  broadcast?: boolean;
+}
+
+export type CreateNotificationResult =
+  | AppNotification
+  | { broadcastRole: Extract<UserRole, "student" | "staff">; count: number }
+  | { broadcast: true; count: number };
+
 export interface PaginationMeta {
   page: number;
   limit: number;
