@@ -16,7 +16,7 @@ export const notificationService = {
     return response.data.data as { sentTo: number };
   },
 
-  async create(
+  async create(   
     input: CreateNotificationInput,
   ): Promise<CreateNotificationResult> {
     const response = await apiClient.post("/notifications", input);
