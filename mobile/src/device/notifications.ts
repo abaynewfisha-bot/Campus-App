@@ -12,45 +12,38 @@ Notifications.setNotificationHandler({
 });
 
 export async function registerForNotifications(): Promise<boolean> {
-  try {
-    // Create Android notification channel first
-    if (Platform.OS === "android") {
+  if (Platform.OS === "android" && Number(Platform.Version) >= 26) {
+    try {
       await Notifications.setNotificationChannelAsync("default", {
         name: "University Campus Notifications",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        sound: "default",
+        importance: Notifications.AndroidImportance.DEFAULT,
       });
-    }
-
-    // Check existing permission
-    const current = await Notifications.getPermissionsAsync();
-
-    let permission = current;
-
-    // Request permission if not already granted
-    if (!current.granted) {
-      permission = await Notifications.requestPermissionsAsync();
-    }
-
-    if (!permission.granted) {
+    } catch (error) {
       console.warn(
-        "Notification permission denied:",
-        permission.status,
-        "Can ask again:",
-        permission.canAskAgain
+        "Android notification channel setup failed; continuing with permission request.",
+        error,
       );
-
-      return false;
     }
+  }
 
-    console.log("University Campus notifications enabled!");
+  const current = await Notifications.getPermissionsAsync();
+  const permission = current.granted
+    ? current
+    : await Notifications.requestPermissionsAsync();
 
-    return true;
-  } catch (error) {
-    console.error("Notification registration error:", error);
+  if (!permission.granted) {
+    console.warn(
+      "Notification permission denied:",
+      permission.status,
+      "Can ask again:",
+      permission.canAskAgain,
+    );
+
     return false;
   }
+
+  console.log("University Campus notifications enabled!");
+  return true;
 }
 
 export async function scheduleLocalNotification(
@@ -67,7 +60,6 @@ export async function scheduleLocalNotification(
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
       seconds,
-      channelId: "default",
     },
   });
 }
